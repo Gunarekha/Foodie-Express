@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart - Foodie Express</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .restaurant-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 15px;
+      margin: 15px 0;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      flex-wrap: wrap;
+    }
+
+    .restaurant-card img {
+      width: 120px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .restaurant-info {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .restaurant-info h3 {
+      margin: 0 0 10px;
+    }
+
+    .restaurant-info p {
+      margin: 4px 0;
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+    }
+
+    .qty-controls button {
+      background-color: #6a1b9a;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 50%;
+      font-size: 20px;
+      font-weight: bold;
+      width: 36px;
+      height: 36px;
+      text-align: center;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s;
+    }
+
+    .qty-controls button:hover {
+      background-color: #4a0072;
+    }
+
+    .remove-btn {
+      background-color: #e53935;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .remove-btn:hover {
+      background-color: #c62828;
+    }
+
+    .cart-summary {
+      border-top: 1px solid #ddd;
+      padding-top: 15px;
+      margin-top: 20px;
+      text-align: right;
+    }
+
+    .cart-summary button {
+      background-color: #388e3c;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .cart-summary button:hover {
+      background-color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <img src="logo.png.jpg" class="logo-img" /> Foodie Express
+    </div>
+    <div class="nav-options">
+      <span onclick="window.location.href='home.html'">🏠 Home</span>
+      <span>🛒 Cart</span>
+    </div>
+  </nav>
+
+  <section class="restaurant-section">
+    <h2>Your Cart</h2>
+    <div id="cartItems" class="restaurant-list cart-items"></div>
+    <div id="cartSummary" class="cart-summary">
+      <p><strong>Total:</strong> ₹<span id="cartTotal">0</span></p>
+      <button onclick="checkoutCart()">Checkout</button>
+    </div>
+  </section>
+
+  <script>
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cartItems = document.getElementById("cartItems");
+    const cartTotal = document.getElementById("cartTotal");
+
+    function renderCart() {
+      cartItems.innerHTML = "";
+      let total = 0;
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = "<p>Your cart is empty.</p>";
+        document.getElementById("cartSummary").style.display = "none";
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        total += item.price * item.qty;
+
+        const card = document.createElement("div");
+        card.className = "restaurant-card";
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <div class="restaurant-info">
+            <h3>${item.name}</h3>
+            <p>Price: ₹${item.price}</p>
+            <div class="qty-controls">
+              <button onclick="updateQty(${index}, -1)">−</button>
+              <span>${item.qty}</span>
+              <button onclick="updateQty(${index}, 1)">＋</button>
+            </div>
+            <button class="remove-btn" onclick="removeItem(${index})">🗑 Remove</button>
+          </div>
+        `;
+        cartItems.appendChild(card);
+      });
+
+      cartTotal.textContent = total;
+      document.getElementById("cartSummary").style.display = "block";
+    }
+
+    function updateQty(index, change) {
+      if (cart[index].qty + change >= 1) {
+        cart[index].qty += change;
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCart();
+      }
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+    }
+
+    function checkoutCart() {
+      alert("Your order has been placed!");
+      localStorage.removeItem("cart");
+      window.location.href = "home.html";
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>
