@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment - Foodie Express</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    :root {
+      --primary-color: #fc8019;
+      --accent-color: #22c55e;
+      --background: #f9f9f9;
+      --card-bg: #ffffff;
+      --border-color: #e0e0e0;
+      --text-color: #333;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--background);
+      margin: 0;
+      padding: 0;
+      color: var(--text-color);
+    }
+
+    .payment-container {
+      max-width: 600px;
+      margin: 60px auto;
+      background: var(--card-bg);
+      padding: 40px 35px;
+      border-radius: 20px;
+      box-shadow: 0 12px 50px rgba(0, 0, 0, 0.08);
+    }
+
+    .payment-container h2 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 35px;
+      font-size: 28px;
+    }
+
+    .section-title {
+      margin-bottom: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .payment-methods label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: #f2f2f2;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    .payment-methods input[type="radio"] {
+      transform: scale(1.2);
+      accent-color: var(--primary-color);
+    }
+
+    .payment-methods label:hover,
+    .payment-methods input:checked + label {
+      background: #ececec;
+    }
+
+    .method-icon {
+      font-size: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    .card-fields,
+    #upiField,
+    #gpayField {
+      display: none;
+    }
+
+    button {
+      width: 100%;
+      background-color: var(--accent-color);
+      border: none;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: 600;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #16a34a;
+    }
+
+    @media (max-width: 600px) {
+      .payment-container {
+        margin: 30px 15px;
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="payment-container">
+    <h2>Complete Your Payment</h2>
+
+    <form id="paymentForm">
+      <div class="section-title">Select Payment Method</div>
+      <div class="payment-methods">
+        <label><input type="radio" name="method" value="card" checked> <span class="method-icon">💳</span> Credit/Debit Card</label>
+        <label><input type="radio" name="method" value="cod"> <span class="method-icon">💵</span> Cash on Delivery</label>
+        <label><input type="radio" name="method" value="gpay"> <span class="method-icon">🟢</span> Google Pay (GPay)</label>
+        <label><input type="radio" name="method" value="upi"> <span class="method-icon">🧾</span> UPI</label>
+      </div>
+
+      <div id="cardFields" class="card-fields">
+        <div class="form-group">
+          <label>Cardholder Name</label>
+          <input type="text" placeholder="Name on Card" required>
+        </div>
+
+        <div class="form-group">
+          <label>Card Number</label>
+          <input type="text" maxlength="16" placeholder="1234 5678 9012 3456" pattern="\d{16}" required>
+        </div>
+
+        <div class="form-group">
+          <label>Expiry Date</label>
+          <input type="text" maxlength="5" placeholder="MM/YY" required>
+        </div>
+
+        <div class="form-group">
+          <label>CVV</label>
+          <input type="password" maxlength="3" placeholder="***" required>
+        </div>
+      </div>
+
+      <div id="gpayField" class="form-group">
+        <label>GPay UPI ID</label>
+        <input type="text" placeholder="example@okhdfcbank">
+      </div>
+
+      <div id="upiField" class="form-group">
+        <label>UPI ID</label>
+        <input type="text" placeholder="example@upi">
+      </div>
+
+      <button type="submit">Pay Now</button>
+    </form>
+  </div>
+<script>
+  const methodInputs = document.querySelectorAll("input[name='method']");
+  const cardFields = document.getElementById("cardFields");
+  const upiField = document.getElementById("upiField");
+  const gpayField = document.getElementById("gpayField");
+  const payButton = document.querySelector("button");
+
+  function toggleFields(method) {
+    cardFields.style.display = method === "card" ? "block" : "none";
+    upiField.style.display = method === "upi" ? "block" : "none";
+    gpayField.style.display = method === "gpay" ? "block" : "none";
+
+    // Change button label based on method
+    payButton.textContent = method === "cod" ? "Place Order" : "Pay Now";
+  }
+
+  methodInputs.forEach(input => {
+    input.addEventListener("change", () => toggleFields(input.value));
+  });
+
+  // Set default view to 'card'
+  toggleFields("card");
+
+  document.getElementById("paymentForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const selectedMethod = document.querySelector("input[name='method']:checked").value;
+
+    if (selectedMethod === "cod") {
+      alert("Order placed successfully with Cash on Delivery!");
+      localStorage.removeItem("cart");
+      window.location.href = "confirmation.html";
+      return;
+    }
+
+    // Proceed with Razorpay for online methods
+    const options = {
+      key: "rzp_test_YourKeyHere", // Replace with your Razorpay key
+      amount: 50000,
+      currency: "INR",
+      name: "Foodie Express",
+      description: "Order Payment",
+      image: "logo.png.jpg",
+      handler: function (response) {
+        alert("Payment successful! Razorpay ID: " + response.razorpay_payment_id);
+        localStorage.removeItem("cart");
+        window.location.href = "confirmation.html";
+      },
+      prefill: {
+        name: "Test User",
+        email: "test@example.com",
+        contact: "9999999999"
+      },
+      theme: {
+        color: "#fc8019"
+      }
+    };
+
+    const razor = new Razorpay(options);
+    razor.open();
+  });
+</script>
+
+</body>
+</html>

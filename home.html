@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Foodie Express</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="navbar.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link href="file:///C:/Users/Admin/OneDrive/Desktop/New%20folder%20(4)/index.html"rel="html">
 </head>
 <body>
 
@@ -16,14 +16,17 @@
       <img src="logo.png.jpg" alt="Foodie Express Logo" class="logo-img"> Foodie Express
     </div>
     <div class="nav-options">
-      <span>Other ▼</span>
-      <span>🔍 Search</span>
-      <span>🏷️ Offers</span>
+      <span class="nav-search">
+        🔍 <input type="text" placeholder="Search dishes or restaurants" />
+        <button onclick="alert('Search functionality coming soon!')">Go</button>
+      </span>
+      <span class="offers-tooltip">🏷️ Offers</span>
       <span>❓ Help</span>
       <span onclick="toggleLoginModal()">👤 Sign In</span>
       <span class="cart" onclick="window.location.href='cart.html'">🛒Cart</span>
-
-
+      <span onclick="window.location.href='order-history.html'">📜 Order History</span>
+      <span onclick="window.location.href='about.html'">ℹ️ About Us</span>
+      <span onclick="window.location.href='contact.html'">📞 Contact Us</span>
     </div>
   </nav>
 
@@ -37,8 +40,6 @@
       <button onclick="loginUser()">Login</button>
     </div>
   </div>
-  
-
 
   <!-- What's on your mind -->
   <section class="mind-section">
@@ -92,11 +93,15 @@
     <div class="footer-container">
       <div>
         <h3>Company</h3>
-        <p>About Us</p><p>Careers</p><p>Team</p>
+        <p onclick="window.location.href='about.html'">About Us</p>
+        <p onclick="window.location.href='careers.html'">Careers</p>
+        <p onclick="window.location.href='team.html'">Team</p>
       </div>
       <div>
         <h3>Contact</h3>
-        <p>Help & Support</p><p>Partner with us</p><p>Ride with us</p>
+        <p onclick="window.location.href='help.html'">Help & Support</p>
+        <p onclick="window.location.href='partner.html'">Partner with us</p>
+        <p onclick="window.location.href='contact.html'">Contact Us</p>
       </div>
       <div>
         <h3>Available in</h3>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - Foodie Express</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="navbar.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <img src="logo.png.jpg" alt="Foodie Express Logo" class="logo-img"> Foodie Express
+    </div>
+    <div class="nav-options">
+      <span onclick="window.location.href='index.html'">🏠 Home</span>
+      <span onclick="window.location.href='cart.html'">🛒 Cart</span>
+      <span onclick="window.location.href='order-history.html'">📜 Order History</span>
+      <span onclick="window.location.href='about.html'">ℹ️ About Us</span>
+    </div>
+  </nav>
+
+  <section class="content-section">
+    <h1>Contact Us</h1>
+    <p>Have a question, suggestion, or feedback? We'd love to hear from you!</p>
+    <form class="contact-form">
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Your Name" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Your Email" required>
+
+      <label for="message">Message</label>
+      <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
+
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
+
+  <footer>
+    <div class="footer-container">
+      <div>
+        <h3>Company</h3>
+        <p onclick="window.location.href='about.html'">About Us</p>
+        <p>Careers</p>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <p onclick="window.location.href='contact.html'">Contact Us</p>
+        <p>Support</p>
+      </div>
+    </div>
+    <p class="copyright">© 2025 Foodie Express</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order History - Foodie Express</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #fc8019;
+      --bg: #fffdf9;
+      --text: #333;
+      --muted: #888;
+      --card-bg: #ffffff;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --border: #eee;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg);
+      margin: 0;
+      padding: 30px 20px;
+      color: var(--text);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      max-width: 900px;
+      margin: 0 auto 25px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .controls input,
+    .controls select {
+      padding: 12px 14px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 15px;
+      width: 48%;
+    }
+
+    .orders-container {
+      max-width: 900px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .order-card {
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      transition: 0.3s ease;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .restaurant-name {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .restaurant-name img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .order-meta {
+      font-size: 14px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .order-items {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 10px 0 15px;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .item img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .item-name {
+      font-weight: 500;
+    }
+
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      border-top: 1px dashed var(--border);
+      padding-top: 10px;
+      font-size: 15px;
+    }
+
+    .eta {
+      color: var(--primary);
+    }
+
+    .reorder-btn {
+      background: var(--primary);
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .reorder-btn:hover {
+      background: #e56f11;
+    }
+
+    .empty-state {
+      text-align: center;
+      margin-top: 50px;
+      color: var(--muted);
+    }
+
+    .empty-state img {
+      width: 160px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .controls input, .controls select {
+        width: 100%;
+      }
+
+      .order-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h1>🍽️ Your Orders</h1>
+
+<div class="controls">
+  <input type="text" id="searchInput" placeholder="Search restaurant...">
+  <select id="dateFilter">
+    <option value="all">All Orders</option>
+    <option value="last7">Last 7 Days</option>
+  </select>
+</div>
+
+<div class="orders-container" id="ordersContainer"></div>
+
+<div class="empty-state" id="emptyState" style="display: none;">
+  <img src="https://cdn-icons-png.flaticon.com/512/4076/4076505.png" alt="No Orders">
+  <p>No matching orders yet.</p>
+</div>
+
+<script>
+  const orders = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+  const container = document.getElementById("ordersContainer");
+  const emptyState = document.getElementById("emptyState");
+  const searchInput = document.getElementById("searchInput");
+  const dateFilter = document.getElementById("dateFilter");
+
+  const foodImages = {
+    "Paneer Butter Masala": "https://i.imgur.com/YV6sJ4n.jpg",
+    "Garlic Naan": "https://i.imgur.com/3xVJ7bi.jpg",
+    "Coke": "https://i.imgur.com/YbBh1ko.jpg",
+    "Idly": "https://i.imgur.com/4rmwPXA.jpg",
+    "Dosa": "https://i.imgur.com/nBVKFpo.jpg",
+    "Biryani": "https://i.imgur.com/XZJmVtC.jpg",
+    "Burger": "https://i.imgur.com/7nFtDfL.jpg"
+  };
+
+  const isWithinLast7Days = dateStr => {
+    const orderDate = new Date(dateStr);
+    const now = new Date();
+    return (now - orderDate) / (1000 * 60 * 60 * 24) <= 7;
+  };
+
+  const renderOrders = () => {
+    container.innerHTML = '';
+    emptyState.style.display = 'none';
+
+    const searchTerm = searchInput.value.toLowerCase();
+    const filterOption = dateFilter.value;
+
+    const filtered = orders.filter(order => {
+      const rest = order.items[0]?.restaurant || '';
+      const matchesSearch = rest.toLowerCase().includes(searchTerm);
+      const matchesDate = filterOption === 'all' || isWithinLast7Days(order.date);
+      return matchesSearch && matchesDate;
+    });
+
+    if (filtered.length === 0) {
+      emptyState.style.display = 'block';
+      return;
+    }
+
+    filtered.reverse().forEach(order => {
+      const rest = order.items[0]?.restaurant || 'Unknown';
+      const date = order.date;
+      const eta = order.eta;
+      const status = "Delivered";
+      const total = order.items.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
+
+      const itemsHtml = order.items.map(item => `
+        <div class="item">
+          <img src="${foodImages[item.name] || 'https://i.imgur.com/4rmwPXA.jpg'}" alt="${item.name}">
+          <div>
+            <div class="item-name">${item.name}</div>
+            <div class="muted">x${item.quantity}</div>
+          </div>
+        </div>
+      `).join("");
+
+      const card = document.createElement('div');
+      card.className = 'order-card';
+      card.innerHTML = `
+        <div class="order-header">
+          <div class="restaurant-name">
+            <img src="https://i.imgur.com/NG9V2kZ.png" alt="${rest} Logo">
+            ${rest}
+          </div>
+          <div class="order-meta">${date} | ${status}</div>
+        </div>
+        <div class="order-items">${itemsHtml}</div>
+        <div class="order-footer">
+          <div>
+            <span class="eta">ETA: ${eta}</span> • ₹${total}
+          </div>
+          <button class="reorder-btn">Reorder</button>
+        </div>
+      `;
+
+      card.querySelector('.reorder-btn').addEventListener('click', () => {
+        localStorage.setItem("cart", JSON.stringify(order.items));
+        alert("Items added to cart! Redirecting to cart...");
+        window.location.href = "cart.html";
+      });
+
+      container.appendChild(card);
+    });
+  };
+
+  searchInput.addEventListener('input', renderOrders);
+  dateFilter.addEventListener('change', renderOrders);
+  renderOrders();
+</script>
+
+</body>
+</html>
