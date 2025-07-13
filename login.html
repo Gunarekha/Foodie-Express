@@ -4,18 +4,113 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login - Foodie Express</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body.login-bg {
+      background: linear-gradient(135deg, #fff8f0, #ffe9e1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-box {
+      background: white;
+      padding: 2.5rem 2rem;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-box h2 {
+      margin-bottom: 1.5rem;
+      color: #ff5722;
+    }
+
+    form label {
+      display: block;
+      text-align: left;
+      margin: 0.75rem 0 0.25rem;
+      color: #333;
+      font-size: 0.95rem;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      outline: none;
+      font-size: 1rem;
+      transition: 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #ff5722;
+      box-shadow: 0 0 5px rgba(255, 87, 34, 0.4);
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 1.5rem;
+      background: #ff5722;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #e64a19;
+    }
+
+    .error-msg {
+      color: red;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    @media screen and (max-width: 480px) {
+      .login-box {
+        padding: 2rem 1.2rem;
+        border-radius: 16px;
+      }
+
+      .login-box h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body class="login-bg">
 
   <div class="login-box">
     <h2>Login to Foodie Express</h2>
     <form id="loginForm">
-      <label for="username">Username:</label>
-      <input type="text" id="username" required placeholder="Enter your username" />
+      <label for="username">Username</label>
+      <input type="text" id="username" required placeholder="e.g. foodie123" />
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" required placeholder="Enter your password" />
+      <label for="password">Password</label>
+      <input type="password" id="password" required placeholder="Enter password" />
 
       <button type="submit">LOGIN</button>
     </form>
@@ -25,8 +120,8 @@
   <script>
     document.getElementById("loginForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      const user = document.getElementById("username").value;
-      const pass = document.getElementById("password").value;
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
 
       if (user === "admin" && pass === "1234") {
         localStorage.setItem("loggedIn", "true");
