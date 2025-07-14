@@ -2,245 +2,324 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Payment - Foodie Express</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
     :root {
-      --primary-color: #fc8019;
-      --accent-color: #22c55e;
-      --background: #f9f9f9;
-      --card-bg: #ffffff;
-      --border-color: #e0e0e0;
-      --text-color: #333;
+      --primary: #ffcb6b;
+      --secondary: #ff9f43;
+      --accent: #ff5a5f;
+      --bg: linear-gradient(135deg, #1a1c2e 0%, #4a4065 70%);
+      --card-bg: rgba(255, 255, 255, 0.12);
+      --text: #ffffff;
+      --muted: #ddd;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      --border: rgba(255, 255, 255, 0.2);
     }
 
     body {
       font-family: 'Poppins', sans-serif;
-      background-color: var(--background);
+      background: var(--bg);
+      color: var(--text);
       margin: 0;
       padding: 0;
-      color: var(--text-color);
     }
 
     .payment-container {
       max-width: 600px;
-      margin: 60px auto;
+      margin: 80px auto;
       background: var(--card-bg);
-      padding: 40px 35px;
+      padding: 40px;
       border-radius: 20px;
-      box-shadow: 0 12px 50px rgba(0, 0, 0, 0.08);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.8s ease-in-out;
     }
 
-    .payment-container h2 {
-      color: var(--primary-color);
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
       text-align: center;
-      margin-bottom: 35px;
-      font-size: 28px;
+      color: var(--primary);
+      margin-bottom: 30px;
     }
 
     .section-title {
       margin-bottom: 16px;
-      font-size: 18px;
       font-weight: 600;
-      color: #444;
-    }
-
-    .payment-methods {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+      color: var(--secondary);
     }
 
     .payment-methods label {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 14px 18px;
-      background: #f2f2f2;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 14px;
       border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      margin-bottom: 10px;
       border: 1px solid transparent;
+      cursor: pointer;
+      transition: 0.3s;
     }
 
     .payment-methods input[type="radio"] {
-      transform: scale(1.2);
-      accent-color: var(--primary-color);
+      accent-color: var(--accent);
+      transform: scale(1.1);
     }
 
-    .payment-methods label:hover,
-    .payment-methods input:checked + label {
-      background: #ececec;
-    }
-
-    .method-icon {
-      font-size: 20px;
+    .payment-methods input:checked + label,
+    .payment-methods label:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--secondary);
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin: 15px 0;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       font-weight: 500;
     }
 
     input[type="text"],
     input[type="password"] {
       width: 100%;
-      padding: 14px;
-      border: 1px solid var(--border-color);
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      border: 1px solid var(--border);
       border-radius: 10px;
       font-size: 15px;
-      box-sizing: border-box;
     }
 
-    .card-fields,
-    #upiField,
-    #gpayField {
+    #cardFields, #phonepeField, #gpayField {
       display: none;
     }
 
     button {
       width: 100%;
-      background-color: var(--accent-color);
+      padding: 14px;
       border: none;
-      padding: 16px;
-      font-size: 17px;
+      border-radius: 14px;
       font-weight: 600;
-      border-radius: 12px;
-      color: white;
+      font-size: 16px;
+      color: #1a1c2e;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
       cursor: pointer;
-      transition: background-color 0.3s ease;
       margin-top: 20px;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
 
     button:hover {
-      background-color: #16a34a;
+      transform: scale(1.03);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    #appliedOffer, #finalAmountDisplay {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--primary);
+      text-align: center;
+    }
+
+    .offers-link {
+      display: block;
+      text-align: center;
+      margin: 15px auto 10px;
+      width: max-content;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: background 0.3s;
+    }
+
+    .offers-link:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    #toast {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--secondary);
+      color: #1a1c2e;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      z-index: 999;
+    }
+
+    .remove-offer {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--accent);
+      cursor: pointer;
+      text-decoration: underline;
     }
 
     @media (max-width: 600px) {
       .payment-container {
-        margin: 30px 15px;
+        margin: 40px 15px;
         padding: 30px 20px;
       }
     }
   </style>
 </head>
 <body>
-
+  <div id="toast"></div>
   <div class="payment-container">
     <h2>Complete Your Payment</h2>
-
+    <a href="offers.html" class="offers-link">🔖 View & Apply Offers</a>
+    <div id="appliedOffer"></div>
+    <div id="finalAmountDisplay"></div>
     <form id="paymentForm">
       <div class="section-title">Select Payment Method</div>
       <div class="payment-methods">
-        <label><input type="radio" name="method" value="card" checked> <span class="method-icon">💳</span> Credit/Debit Card</label>
-        <label><input type="radio" name="method" value="cod"> <span class="method-icon">💵</span> Cash on Delivery</label>
-        <label><input type="radio" name="method" value="gpay"> <span class="method-icon">🟢</span> Google Pay (GPay)</label>
-        <label><input type="radio" name="method" value="upi"> <span class="method-icon">🧾</span> UPI</label>
+        <label><input type="radio" name="method" value="card" checked> 💳 Credit/Debit Card</label>
+        <label><input type="radio" name="method" value="cod"> 💵 Cash on Delivery</label>
+        <label><input type="radio" name="method" value="gpay"> 🟢 Google Pay</label>
+        <label><input type="radio" name="method" value="phonepe"> 🔵 PhonePe</label>
       </div>
 
-      <div id="cardFields" class="card-fields">
-        <div class="form-group">
-          <label>Cardholder Name</label>
-          <input type="text" placeholder="Name on Card" required>
-        </div>
-
-        <div class="form-group">
-          <label>Card Number</label>
-          <input type="text" maxlength="16" placeholder="1234 5678 9012 3456" pattern="\d{16}" required>
-        </div>
-
-        <div class="form-group">
-          <label>Expiry Date</label>
-          <input type="text" maxlength="5" placeholder="MM/YY" required>
-        </div>
-
-        <div class="form-group">
-          <label>CVV</label>
-          <input type="password" maxlength="3" placeholder="***" required>
-        </div>
+      <div id="cardFields">
+        <div class="form-group"><label>Cardholder Name</label><input type="text" placeholder="Name on Card"></div>
+        <div class="form-group"><label>Card Number</label><input type="text" maxlength="16" placeholder="1234 5678 9012 3456" pattern="\d{16}"></div>
+        <div class="form-group"><label>Expiry Date</label><input type="text" maxlength="5" placeholder="MM/YY"></div>
+        <div class="form-group"><label>CVV</label><input type="password" maxlength="3" placeholder="***"></div>
       </div>
 
-      <div id="gpayField" class="form-group">
-        <label>GPay UPI ID</label>
-        <input type="text" placeholder="example@okhdfcbank">
-      </div>
+      <div id="gpayField" class="form-group"><label>GPay ID</label><input type="text" placeholder="example@okhdfcbank"></div>
+      <div id="phonepeField" class="form-group"><label>PhonePe ID</label><input type="text" placeholder="example@ybl"></div>
 
-      <div id="upiField" class="form-group">
-        <label>UPI ID</label>
-        <input type="text" placeholder="example@upi">
-      </div>
-
-      <button type="submit">Pay Now</button>
+      <button type="submit" id="payBtn">Pay Now</button>
     </form>
   </div>
-<script>
-  const methodInputs = document.querySelectorAll("input[name='method']");
-  const cardFields = document.getElementById("cardFields");
-  const upiField = document.getElementById("upiField");
-  const gpayField = document.getElementById("gpayField");
-  const payButton = document.querySelector("button");
 
-  function toggleFields(method) {
-    cardFields.style.display = method === "card" ? "block" : "none";
-    upiField.style.display = method === "upi" ? "block" : "none";
-    gpayField.style.display = method === "gpay" ? "block" : "none";
+  <script>
+    const methodInputs = document.querySelectorAll("input[name='method']");
+    const cardFields = document.getElementById("cardFields");
+    const gpayField = document.getElementById("gpayField");
+    const phonepeField = document.getElementById("phonepeField");
+    const payBtn = document.getElementById("payBtn");
+    const offerDisplay = document.getElementById("appliedOffer");
+    const amountDisplay = document.getElementById("finalAmountDisplay");
+    const toast = document.getElementById("toast");
 
-    // Change button label based on method
-    payButton.textContent = method === "cod" ? "Place Order" : "Pay Now";
-  }
-
-  methodInputs.forEach(input => {
-    input.addEventListener("change", () => toggleFields(input.value));
-  });
-
-  // Set default view to 'card'
-  toggleFields("card");
-
-  document.getElementById("paymentForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const selectedMethod = document.querySelector("input[name='method']:checked").value;
-
-    if (selectedMethod === "cod") {
-      alert("Order placed successfully with Cash on Delivery!");
-      localStorage.removeItem("cart");
-      window.location.href = "confirmation.html";
-      return;
+    function toggleFields(method) {
+      cardFields.style.display = method === "card" ? "block" : "none";
+      gpayField.style.display = method === "gpay" ? "block" : "none";
+      phonepeField.style.display = method === "phonepe" ? "block" : "none";
+      payBtn.textContent = method === "cod" ? "Place Order" : "Pay Now";
     }
 
-    // Proceed with Razorpay for online methods
-    const options = {
-      key: "rzp_test_YourKeyHere", // Replace with your Razorpay key
-      amount: 50000,
-      currency: "INR",
-      name: "Foodie Express",
-      description: "Order Payment",
-      image: "logo.png.jpg",
-      handler: function (response) {
-        alert("Payment successful! Razorpay ID: " + response.razorpay_payment_id);
-        localStorage.removeItem("cart");
-        window.location.href = "confirmation.html";
-      },
-      prefill: {
-        name: "Test User",
-        email: "test@example.com",
-        contact: "9999999999"
-      },
-      theme: {
-        color: "#fc8019"
+    methodInputs.forEach(input => {
+      input.addEventListener("change", () => toggleFields(input.value));
+    });
+
+    toggleFields("card");
+
+    const appliedOffer = JSON.parse(localStorage.getItem("appliedOffer") || "null");
+    const baseAmount = 50000;
+    let finalAmount = baseAmount;
+
+    function updateAmountDisplay() {
+      amountDisplay.innerHTML = `Total Amount: ₹<strong>${(finalAmount / 100).toFixed(2)}</strong>`;
+    }
+
+    if (appliedOffer) {
+      offerDisplay.innerHTML = `Offer Applied: <strong>${appliedOffer.title}</strong> - ${appliedOffer.details} <span class="remove-offer" onclick="removeOffer()">(Remove)</span>`;
+      if (appliedOffer.code === "SAVE100") {
+        finalAmount -= 10000;
+      } else if (appliedOffer.code === "FOODIE30") {
+        finalAmount = Math.floor(baseAmount * 0.7);
       }
-    };
+      toast.innerText = `🎉 Offer '${appliedOffer.code}' applied!`;
+      toast.style.display = "block";
+      setTimeout(() => toast.style.display = "none", 4000);
+    }
 
-    const razor = new Razorpay(options);
-    razor.open();
-  });
-</script>
+    updateAmountDisplay();
 
+    function removeOffer() {
+      localStorage.removeItem("appliedOffer");
+      location.reload();
+    }
+
+    document.getElementById("paymentForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const method = document.querySelector("input[name='method']:checked").value;
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+      if (cart.length === 0) {
+        alert("Your cart is empty.");
+        return;
+      }
+
+      const saveOrder = () => {
+        const order = {
+          id: Date.now(),
+          items: cart,
+          date: new Date().toLocaleString(),
+          eta: Math.floor(Math.random() * 20) + 20 + " mins"
+        };
+        const history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+        history.push(order);
+        localStorage.setItem("orderHistory", JSON.stringify(history));
+        localStorage.setItem("lastOrder", JSON.stringify(order));
+        localStorage.removeItem("cart");
+        localStorage.removeItem("appliedOffer");
+        window.location.href = "confirmation.html";
+      };
+
+      if (method === "cod") {
+        alert("Order placed successfully with Cash on Delivery!");
+        saveOrder();
+        return;
+      }
+
+      const options = {
+        key: "rzp_test_YourKeyHere",
+        amount: finalAmount,
+        currency: "INR",
+        name: "Foodie Express",
+        description: "Order Payment",
+        handler: function (response) {
+          alert("Payment successful! Razorpay ID: " + response.razorpay_payment_id);
+          saveOrder();
+        },
+        prefill: {
+          name: "Test User",
+          email: "test@example.com",
+          contact: "9999999999"
+        },
+        theme: {
+          color: "#ffcb6b"
+        },
+        modal: {
+          ondismiss: function () {
+            alert("Payment cancelled.");
+            document.body.style.overflow = "auto";
+          }
+        }
+      };
+
+      const razorpay = new Razorpay(options);
+      razorpay.open();
+    });
+  </script>
 </body>
 </html>
