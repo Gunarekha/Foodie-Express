@@ -7,6 +7,18 @@
   <link rel="stylesheet" href="navbar.css" />
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    #logoutBtn {
+      color: #fff;
+      background-color: #ff4d4d;
+      padding: 6px 12px;
+      border-radius: 8px;
+      margin-left: 10px;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-block;
+    }
+  </style>
 </head>
 <body>
   <!-- Navbar -->
@@ -21,11 +33,12 @@
       </span>
       <span class="offers-tooltip" onclick="showOfferItems()">🏷️ Offers</span>
       <span onclick="window.location.href='help.html'">❓ Help</span>
-      <span onclick="toggleLoginModal()">👤 Sign In</span>
+      
       <span class="cart" onclick="window.location.href='cart.html'">🛒Cart</span>
       <span onclick="window.location.href='order-history.html'">📜 Order History</span>
       <span onclick="window.location.href='about.html'">ℹ️ About Us</span>
       <span onclick="window.location.href='contact.html'">📞 Contact Us</span>
+      <span id="logout" onclick="logoutUser()">🚪 Logout</span>
     </div>
   </nav>
 
@@ -117,5 +130,6 @@
   </footer>
 
   <script src="script.js"></script>
+  
 </body>
 </html>

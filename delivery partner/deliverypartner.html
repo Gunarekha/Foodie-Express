@@ -323,6 +323,20 @@
         flex-direction: column;
         gap: 15px;
       }
+       #logoutBtn {
+      background: linear-gradient(90deg, #ffcb6b, #ff9f43);
+      color: #1f1c2c;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    #logoutBtn:hover {
+      background: linear-gradient(90deg, #e0b54a, #e07f2a);
+    }
     }
   </style>
 </head>
@@ -344,6 +358,7 @@
           <li><a href="earnings.html"><i class="fas fa-wallet"></i> Earnings</a></li>
           <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
           <li><a href="home.html"><i class="fas fa-arrow-left"></i> Back to Customer Panel</a></li>
+           <li><a href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
       </nav>
     </aside>
@@ -409,11 +424,17 @@
 
   <script>
     // Toggle Sidebar
-    const toggleSidebar = document.getElementById('toggleSidebar');
+   const toggleSidebar = document.getElementById('toggleSidebar');
     const sidebar = document.querySelector('.sidebar');
     toggleSidebar.addEventListener('click', () => {
       sidebar.classList.toggle('active');
     });
+    function logoutUser() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('user');
+      alert('You have been logged out!');
+      window.location.href = 'login.html';
+    }
   </script>
 </body>
 </html>

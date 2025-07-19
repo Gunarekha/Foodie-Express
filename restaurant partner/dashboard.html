@@ -62,6 +62,19 @@
       font-size: 16px;
       color: #ccc;
     }
+    .logout-btn {
+      background: linear-gradient(to right, #ffcb6b, #ff9f43);
+      color: #1a1c2e;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .logout-btn:hover {
+      background: linear-gradient(to right, #e0b54a, #e07f2a);
+    }
     .card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -136,11 +149,15 @@
       <a href="profile.html">Profile</a>
       <a href="../customer/home.html">Customer Panel</a>
       <a href="reviews.html">Reviews</a>
+      <a href="#" onclick="logoutUser()">Logout</a>
     </aside>
     <main class="main">
       <div class="dashboard-header">
         <h1>Welcome, Partner!</h1>
-        <p>📅 Today: <span id="date"></span></p>
+        <div>
+          <p>📅 Today: <span id="date"></span></p>
+          <button class="logout-btn" onclick="logoutUser()">Logout</button>
+        </div>
       </div>
       <div class="card-grid">
         <div class="card">
@@ -160,7 +177,6 @@
           <div id="orderList"></div>
         </div>
       </div>
-
       <div class="chart-container">
         <h3 style="color:#ffcb6b; margin-bottom:10px;">Top Dishes This Week</h3>
         <canvas id="dishChart" height="100"></canvas>
@@ -170,6 +186,13 @@
 
   <script>
     document.getElementById("date").textContent = new Date().toDateString();
+
+    function logoutUser() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('user');
+      alert('You have been logged out!');
+      window.location.href = 'login.html';
+    }
 
     const orders = [
       { id: 1023, items: ["Dosa", "Idly"], status: "Preparing", earning: 120 },

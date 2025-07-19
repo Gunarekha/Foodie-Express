@@ -421,3 +421,13 @@ footer p:hover {
   cursor: pointer;
   color: #fff;
 }
+#logout {
+      color: #fff;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    #logout:hover {
+      color: #e76e00;
+    }

@@ -425,3 +425,15 @@ function renderRestaurants(containerId, data, toggleItemsOnClick = false) {
 
 renderRestaurants("topRestaurants", topRestaurants, true);
 renderRestaurants("onlineRestaurants", onlineRestaurants, true);
+function logoutUser() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('user');
+      alert('You have been logged out!');
+      location.reload();
+    }
+    function logoutUser() {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('user');
+      alert('You have been logged out!');
+      window.location.href = 'login.html';
+    }
